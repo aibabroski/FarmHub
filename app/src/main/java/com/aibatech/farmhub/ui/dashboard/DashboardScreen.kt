@@ -4,12 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -19,19 +15,18 @@ import com.aibatech.farmhub.ui.theme.poppins
 
 @Composable
 fun DashboardScreen(
-    onAddProductClick: () -> Unit,
-    onViewOrdersClick: () -> Unit,
-    onProductClick: (String) -> Unit // Product ID
+    onProductClick: (String) -> Unit,
+    onOrderClick: (String) -> Unit,
 ) {
-    val products =
-        remember { mutableStateListOf("Tomatoes", "Cucumbers", "Carrots") } // Sample product list
+    val products = remember { mutableStateListOf("Tomatoes", "Cucumbers", "Carrots") } // Replace with real data
+    val orders = remember { mutableStateListOf("Order 1", "Order 2", "Order 3") } // Replace with real data
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Welcome Message
+        // Welcome Text
         Text(
             text = "Welcome to your Dashboard",
             fontFamily = poppins,
@@ -40,20 +35,7 @@ fun DashboardScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Add Product Button
-        Button(
-            onClick = { onAddProductClick() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Icon(Icons.Filled.Add, contentDescription = "Add Product")
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Add Product")
-        }
-
-        // Product List
+        // Products Section
         Text(
             text = "Your Products",
             fontFamily = poppins,
@@ -62,17 +44,27 @@ fun DashboardScreen(
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        LazyColumn {
-            items(products.size) { index ->
-                ProductItem(
-                    productName = products[index],
-                    onClick = { onProductClick(products[index]) }
-                )
+        if (products.isNotEmpty()) {
+            LazyColumn {
+                items(products.size) { index ->
+                    ProductItem(
+                        productName = products[index],
+                        onClick = { onProductClick(products[index]) }
+                    )
+                }
             }
+        } else {
+            Text(
+                text = "No products available. Add some products to start selling!",
+                fontFamily = poppins,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
         }
 
-        // Orders Overview
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Orders Section
         Text(
             text = "Recent Orders",
             fontFamily = poppins,
@@ -81,12 +73,22 @@ fun DashboardScreen(
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        Button(
-            onClick = { onViewOrdersClick() },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("View All Orders")
+        if (orders.isNotEmpty()) {
+            LazyColumn {
+                items(orders.size) { index ->
+                    OrderItem(
+                        orderName = orders[index],
+                        onClick = { onOrderClick(orders[index]) }
+                    )
+                }
+            }
+        } else {
+            Text(
+                text = "No orders yet. You'll see your orders here when buyers place them.",
+                fontFamily = poppins,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
         }
     }
 }
@@ -99,7 +101,7 @@ fun ProductItem(productName: String, onClick: () -> Unit) {
             .padding(vertical = 8.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
             modifier = Modifier
@@ -109,6 +111,32 @@ fun ProductItem(productName: String, onClick: () -> Unit) {
         ) {
             Text(
                 text = productName,
+                fontFamily = poppins,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun OrderItem(orderName: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = orderName,
                 fontFamily = poppins,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp
