@@ -77,4 +77,6 @@ dependencies {
     implementation (libs.converter.gson)
     implementation (libs.logging.interceptor)
     implementation (libs.gson)
+    implementation (libs.androidx.ui.text.google.fonts)
+
 }

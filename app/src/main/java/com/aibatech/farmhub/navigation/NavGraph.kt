@@ -7,92 +7,92 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.aibatech.farmhub.ui.auth.LoginScreen
 import com.aibatech.farmhub.ui.auth.RegisterScreen
 import com.aibatech.farmhub.ui.dashboard.DashboardScreen
-import com.aibatech.farmhub.ui.navigation.BottomNavigationBar
-import com.aibatech.farmhub.ui.onboarding.OnboardingScreen
-import com.aibatech.farmhub.ui.order.ChatListScreen
-import com.aibatech.farmhub.ui.order.ChatScreen
-import com.aibatech.farmhub.ui.product.AddEditProductScreen
+import com.aibatech.farmhub.ui.chat.ChatListScreen
 import com.aibatech.farmhub.ui.profile.ProfileScreen
+import com.aibatech.farmhub.ui.navigation.BottomNavigationBar
+import com.aibatech.farmhub.ui.product.AddEditProductScreen
+import com.aibatech.farmhub.ui.onboarding.OnboardingScreen
 import com.aibatech.farmhub.viewmodel.AuthViewModel
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    authViewModel: AuthViewModel // Inject the ViewModel from a higher level
+    authViewModel: AuthViewModel
 ) {
     NavHost(navController = navController, startDestination = "onboarding") {
+        // Onboarding Screen
         composable("onboarding") {
-            OnboardingScreen {
-                navController.navigate("login")
-            }
+            OnboardingScreen(
+                onGetStartedClick = { navController.navigate("login") }
+            )
         }
+
+        // Login Screen
         composable("login") {
             LoginScreen(
                 viewModel = authViewModel,
-                onLoginClick = { navController.navigate("dashboard") },
+                onLoginClick = { navController.navigate("main") },
                 onRegisterClick = { navController.navigate("register") }
             )
         }
+
+        // Register Screen
         composable("register") {
             RegisterScreen(
                 viewModel = authViewModel,
-                onRegisterSuccess = {
-                    navController.navigate("login") {
-                        popUpTo("register") { inclusive = true } // Prevents going back to register screen
-                    }
-                }
+                onRegisterSuccess = { navController.navigate("login") }
             )
         }
-        composable("dashboard") {
-            DashboardScreen(
-                onProductClick = { productId -> navController.navigate("productDetails/$productId") },
-                onOrderClick = { orderId -> navController.navigate("orderDetails/$orderId") }
-            )
-        }
+
+        // Main Screen with Bottom Navigation
         composable("main") {
-            Scaffold(
-                bottomBar = { BottomNavigationBar(navController = navController) }
-            ) { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = "dashboard",
-                    modifier = Modifier.padding(innerPadding)
-                ) {
-                    // Dashboard Screen
-                    composable("dashboard") {
-                        DashboardScreen(
-                            onProductClick = { productId -> navController.navigate("productDetails/$productId") },
-                            onOrderClick = { orderId -> navController.navigate("orderDetails/$orderId") }
-                        )
-                    }
-
-                    // Add/Edit Product Screen
-                    composable("addEditProduct") {
-                        AddEditProductScreen()
-                    }
-
-                    // Chat List Screen
-                    composable("chat") {
-                        ChatListScreen(
-                            onChatClick = { buyerId -> navController.navigate("chat/$buyerId") }
-                        )
-                    }
-
-                    // Profile Screen
-                    composable("profile") {
-                        ProfileScreen()
-                    }
-                }
-            }
+            MainScreen(navController)
         }
+    }
+}
 
-        // Individual Chat Screen
-        composable("chat/{buyerId}") { backStackEntry ->
-            val buyerId = backStackEntry.arguments?.getString("buyerId")
-            ChatScreen(buyerId = buyerId)
+@Composable
+fun MainScreen(navController: NavHostController) {
+    // Create a new NavController for the inner NavHost
+    val innerNavController = rememberNavController()
+
+    Scaffold(
+        bottomBar = { BottomNavigationBar(navController = innerNavController) } // Bottom navigation bar uses innerNavController
+    ) { innerPadding ->
+        NavHost(
+            navController = innerNavController, // Use the reassigned innerNavController
+            startDestination = "dashboard", // Ensure the initial screen is "dashboard"
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            // Dashboard Screen
+            composable("dashboard") {
+                DashboardScreen()
+            }
+
+            // Add/Edit Product Screen
+            composable("addEditProduct") {
+                AddEditProductScreen()
+            }
+
+            // Chat Screen
+            composable("chat") {
+                ChatListScreen()
+            }
+
+            // Profile Screen
+            composable("profile") {
+                ProfileScreen(
+                    onLogoutClick = {
+                        navController.navigate("login") {
+                            popUpTo("main") { inclusive = true } // Clear back stack when logging out
+                        }
+                    }
+                )
+            }
         }
     }
 }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -69,7 +68,8 @@ fun OnboardingScreen(onGetStartedClick: () -> Unit) {
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 50.sp,
                     color = Color.White,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    lineHeight = 56.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -86,9 +86,7 @@ fun OnboardingScreen(onGetStartedClick: () -> Unit) {
 
                 // Get Started Button
                 Button(
-                    onClick = { onGetStartedClick(
-
-                    ) },
+                    onClick = { onGetStartedClick( )},
                     modifier = Modifier.fillMaxWidth(0.8f),
                     shape = RoundedCornerShape(16.dp)
                 ) {

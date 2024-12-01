@@ -1,11 +1,11 @@
 package com.aibatech.farmhub.ui.dashboard
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -14,133 +14,174 @@ import androidx.compose.ui.unit.sp
 import com.aibatech.farmhub.ui.theme.poppins
 
 @Composable
-fun DashboardScreen(
-    onProductClick: (String) -> Unit,
-    onOrderClick: (String) -> Unit,
-) {
-    val products = remember { mutableStateListOf("Tomatoes", "Cucumbers", "Carrots") } // Replace with real data
-    val orders = remember { mutableStateListOf("Order 1", "Order 2", "Order 3") } // Replace with real data
-
+fun DashboardScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Welcome Text
-        Text(
-            text = "Welcome to your Dashboard",
-            fontFamily = poppins,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        // Products Section
-        Text(
-            text = "Your Products",
-            fontFamily = poppins,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        if (products.isNotEmpty()) {
-            LazyColumn {
-                items(products.size) { index ->
-                    ProductItem(
-                        productName = products[index],
-                        onClick = { onProductClick(products[index]) }
-                    )
-                }
-            }
-        } else {
-            Text(
-                text = "No products available. Add some products to start selling!",
-                fontFamily = poppins,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(vertical = 16.dp)
-            )
-        }
+        // Summary Section
+        SummarySection()
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Orders Section
+        OrdersSection()
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Products Section
+        ProductsSection()
+    }
+}
+
+@Composable
+fun SummarySection() {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Total Products
+            SummaryItem(title = "Products", value = "15;")
+
+            // Total Orders
+            SummaryItem(title = "Orders", value = "23")
+
+            // Revenue
+            SummaryItem(title = "Revenue", value = "$1,500")
+        }
+    }
+}
+
+@Composable
+fun SummaryItem(title: String, value: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-            text = "Recent Orders",
-            fontFamily = poppins,
-            fontWeight = FontWeight.Bold,
+            text = value,
             fontSize = 20.sp,
-            modifier = Modifier.padding(bottom = 8.dp)
+            fontWeight = FontWeight.Bold,
+            fontFamily = poppins
         )
+        Text(
+            text = title,
+            fontSize = 14.sp,
+            fontFamily = poppins
+        )
+    }
+}
 
-        if (orders.isNotEmpty()) {
-            LazyColumn {
-                items(orders.size) { index ->
-                    OrderItem(
-                        orderName = orders[index],
-                        onClick = { onOrderClick(orders[index]) }
-                    )
-                }
+@Composable
+fun OrdersSection() {
+    Text(
+        text = "Recent Orders",
+        style = MaterialTheme.typography.headlineMedium.copy(fontFamily = poppins),
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+
+    LazyColumn(modifier = Modifier.height(150.dp)) {
+        items((1..5).toList()) { order ->
+            OrderCard(
+                buyerName = "Buyer $order",
+                orderTotal = "$${order * 50}",
+                status = if (order % 2 == 0) "Completed" else "Pending"
+            )
+        }
+    }
+}
+
+@Composable
+fun OrderCard(buyerName: String, orderTotal: String, status: String) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(
+                    text = buyerName,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppins
+                )
+                Text(
+                    text = orderTotal,
+                    fontSize = 14.sp,
+                    fontFamily = poppins
+                )
             }
-        } else {
             Text(
-                text = "No orders yet. You'll see your orders here when buyers place them.",
+                text = status,
                 fontFamily = poppins,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(vertical = 16.dp)
+                color = if (status == "Completed") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
         }
     }
 }
 
 @Composable
-fun ProductItem(productName: String, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = productName,
-                fontFamily = poppins,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp
-            )
+fun ProductsSection() {
+    Text(
+        text = "Your Products",
+        style = MaterialTheme.typography.headlineMedium.copy(fontFamily = poppins),
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
+
+    LazyColumn {
+        items((1..10).toList()) { product ->
+            ProductCard(productName = "Product $product", price = "$${product * 10}")
         }
     }
 }
 
 @Composable
-fun OrderItem(orderName: String, onClick: () -> Unit) {
+fun ProductCard(productName: String, price: String) {
     Card(
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = orderName,
-                fontFamily = poppins,
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp
-            )
+            Column {
+                Text(
+                    text = productName,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppins
+                )
+                Text(
+                    text = price,
+                    fontSize = 14.sp,
+                    fontFamily = poppins
+                )
+            }
+            Button(onClick = { /* Navigate to edit screen */ }) {
+                Text(
+                    text = "Edit",
+                    fontFamily = poppins
+                )
+            }
         }
     }
 }

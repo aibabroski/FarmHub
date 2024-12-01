@@ -1,59 +1,40 @@
 package com.aibatech.farmhub.ui.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.aibatech.farmhub.R
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 
 data class BottomNavItem(
     val route: String,
-    val icon: ImageVector, // Use ImageVector for default Material icons
-    val title: String // Use a String instead of a resource ID for simplicity
+    val icon: ImageVector,
+    val label: String
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem(route = "dashboard", icon = Icons.Filled.Home, title = "Dashboard"),
-    BottomNavItem(route = "addEditProduct", icon = Icons.Filled.Add, title = "Add/Edit Product"),
-    BottomNavItem(route = "chat", icon = Icons.Filled.Phone, title = "Chat"),
-    BottomNavItem(route = "profile", icon = Icons.Filled.Person, title = "Profile")
+    BottomNavItem(route = "dashboard", icon = Icons.Filled.Home, label = "Dashboard"),
+    BottomNavItem(route = "addEditProduct", icon = Icons.Filled.Add, label = "Products"),
+    BottomNavItem(route = "chat", icon = Icons.Filled.Email, label = "Chat"),
+    BottomNavItem(route = "profile", icon = Icons.Filled.Person, label = "Profile")
 )
+
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-    val navBackStackEntry = navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry.value?.destination?.route
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar(
-        tonalElevation = 8.dp
-    ) {
+    NavigationBar {
         bottomNavItems.forEach { item ->
             NavigationBarItem(
-                selected = currentRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo("dashboard") { inclusive = false }
-                        launchSingleTop = true
-                    }
-                },
-                icon = {
-                    Icon(
-                        imageVector = item.icon, // Use ImageVector for default Material icons
-                        contentDescription = item.title
-                    )
-                },
-                label = {
-                    Text(text = item.title) // Use plain text for titles
-                }
+                selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
+                onClick = { navController.navigate(item.route) },
+                icon = { Icon(item.icon, contentDescription = item.label) },
+                label = { Text(item.label) }
             )
         }
     }
