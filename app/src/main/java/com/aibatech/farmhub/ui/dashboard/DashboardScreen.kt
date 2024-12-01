@@ -23,7 +23,8 @@ fun DashboardScreen(
     onViewOrdersClick: () -> Unit,
     onProductClick: (String) -> Unit // Product ID
 ) {
-    val products = remember { mutableStateListOf("Tomatoes", "Cucumbers", "Carrots") } // Sample product list
+    val products =
+        remember { mutableStateListOf("Tomatoes", "Cucumbers", "Carrots") } // Sample product list
 
     Column(
         modifier = Modifier

@@ -51,20 +51,22 @@ class AuthViewModel(private val repository: AuthRepository = AuthRepository()) :
     }
 
 
-
-
-
     fun login(email: String, password: String) {
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            val response = repository.login(email, password)
-            if (response.isSuccessful && response.body() != null) {
-                _authState.value = response.body()!!.token?.let { AuthState.Success(it) }!!
-            } else {
-                _authState.value = AuthState.Error(response.message())
+            try {
+                val response = repository.login(email, password)
+                if (response.isSuccessful && response.body()?.success == true) {
+                    _authState.value = AuthState.Success("Login successful!")
+                } else {
+                    _authState.value = AuthState.Error("Invalid credentials.")
+                }
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error(e.message ?: "An unexpected error occurred.")
             }
         }
     }
+
 
     fun resetState() {
         _authState.value = AuthState.Idle

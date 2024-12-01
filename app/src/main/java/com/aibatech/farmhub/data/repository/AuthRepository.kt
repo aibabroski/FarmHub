@@ -28,12 +28,18 @@ class AuthRepository(private val apiService: AuthApiService = RetrofitClient.ins
             location = location,
             password = password
         )
-        println("Register Request: $request") // Log the request payload
-        return apiService.register(request)
+        println("Register Request: $request")
+        val response = apiService.register(request)
+        println("Register Response: ${response.body()}") // Log the response
+        return response
     }
 
 
-
-    suspend fun login(email: String, password: String) =
-        apiService.login(LoginRequest(email, password))
+    suspend fun login(email: String, password: String): Response<AuthResponse> {
+        val request = LoginRequest(email, password)
+        println("Login Request: $request") // Log the request
+        val response = apiService.login(request)
+        println("Login Response: ${response.body()}") // Log the response
+        return response
+    }
 }

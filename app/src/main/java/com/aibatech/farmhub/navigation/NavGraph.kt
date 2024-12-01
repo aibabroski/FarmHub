@@ -23,7 +23,7 @@ fun NavGraph(
         }
         composable("login") {
             LoginScreen(
-                viewModel = authViewModel, // Pass the injected ViewModel here
+                viewModel = authViewModel,
                 onLoginClick = { navController.navigate("dashboard") },
                 onRegisterClick = { navController.navigate("register") }
             )
@@ -47,7 +47,5 @@ fun NavGraph(
                 }
             )
         }
-
-
     }
 }

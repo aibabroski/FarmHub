@@ -81,34 +81,19 @@ fun LoginScreen(viewModel: AuthViewModel, onLoginClick: () -> Unit, onRegisterCl
 
         // Handle Authentication State
         when (authState.value) {
-            is AuthState.Loading -> Text(
-                text = "Loading...",
-                fontFamily = poppins,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            is AuthState.Loading -> Text("Loading...")
             is AuthState.Success -> {
-                Text(
-                    text = "Login Successful!",
-                    fontFamily = poppins,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+                Text("Login Successful!")
                 onLoginClick()
+                viewModel.resetState() // Reset state to prevent re-trigger
             }
             is AuthState.Error -> Text(
                 text = "Error: ${(authState.value as AuthState.Error).message}",
-                fontFamily = poppins,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp)
+                color = MaterialTheme.colorScheme.error
             )
             else -> {}
         }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 

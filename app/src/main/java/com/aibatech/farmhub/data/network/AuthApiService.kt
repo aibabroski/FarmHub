@@ -17,12 +17,10 @@ data class RegisterRequest(
 data class LoginRequest(val email: String, val password: String)
 
 data class AuthResponse(
-    val success: Boolean,
-    val message: String?,
-    val token: String? // Optional if your backend does not return it during registration
+    val success: Boolean, // Indicates whether the login was successful
+    val token: String?,   // Optional, can be null
+    val message: String?  // Message describing the result
 )
-
-
 
 interface AuthApiService {
 
