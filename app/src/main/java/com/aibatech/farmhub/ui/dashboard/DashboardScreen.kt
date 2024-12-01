@@ -8,27 +8,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.aibatech.farmhub.ui.theme.poppins
 
 @Composable
 fun DashboardScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Summary Section
         SummarySection()
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Orders Section
         OrdersSection()
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Products Section
         ProductsSection()
@@ -49,7 +43,7 @@ fun SummarySection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             // Total Products
-            SummaryItem(title = "Products", value = "15;")
+            SummaryItem(title = "Products", value = "15")
 
             // Total Orders
             SummaryItem(title = "Orders", value = "23")
@@ -67,14 +61,13 @@ fun SummaryItem(title: String, value: String) {
     ) {
         Text(
             text = value,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = poppins
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
         Text(
             text = title,
-            fontSize = 14.sp,
-            fontFamily = poppins
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }
@@ -83,7 +76,8 @@ fun SummaryItem(title: String, value: String) {
 fun OrdersSection() {
     Text(
         text = "Recent Orders",
-        style = MaterialTheme.typography.headlineMedium.copy(fontFamily = poppins),
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(bottom = 8.dp)
     )
 
@@ -116,18 +110,18 @@ fun OrderCard(buyerName: String, orderTotal: String, status: String) {
             Column {
                 Text(
                     text = buyerName,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = poppins
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = orderTotal,
-                    fontSize = 14.sp,
-                    fontFamily = poppins
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Text(
                 text = status,
-                fontFamily = poppins,
+                style = MaterialTheme.typography.bodyMedium,
                 color = if (status == "Completed") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
         }
@@ -138,7 +132,8 @@ fun OrderCard(buyerName: String, orderTotal: String, status: String) {
 fun ProductsSection() {
     Text(
         text = "Your Products",
-        style = MaterialTheme.typography.headlineMedium.copy(fontFamily = poppins),
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(bottom = 8.dp)
     )
 
@@ -167,19 +162,26 @@ fun ProductCard(productName: String, price: String) {
             Column {
                 Text(
                     text = productName,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = poppins
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = price,
-                    fontSize = 14.sp,
-                    fontFamily = poppins
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Button(onClick = { /* Navigate to edit screen */ }) {
+            Button(
+                onClick = { /* Navigate to edit screen */ },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
                 Text(
                     text = "Edit",
-                    fontFamily = poppins
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
