@@ -52,7 +52,6 @@ fun FarmHubTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
         content = content
     )
 }

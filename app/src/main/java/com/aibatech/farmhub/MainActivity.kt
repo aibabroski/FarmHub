@@ -3,24 +3,21 @@ package com.aibatech.farmhub
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.aibatech.farmhub.ui.theme.FarmHubTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.aibatech.farmhub.navigation.NavGraph
+import com.aibatech.farmhub.viewmodel.AuthViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            FarmHubTheme {
+            // Create the AuthViewModel instance
+            val authViewModel: AuthViewModel = viewModel()
 
-            }
+            // Set up navigation with the ViewModel
+            val navController = rememberNavController()
+            NavGraph(navController = navController, authViewModel = authViewModel)
         }
     }
 }

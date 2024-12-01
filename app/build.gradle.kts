@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.aibatech.farmhub"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.aibatech.farmhub"
@@ -66,4 +66,15 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // new implementations
+    implementation (libs.material3)
+    implementation (libs.androidx.navigation.compose)
+
+    implementation (libs.accompanist.pager)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
+    implementation (libs.gson)
 }
