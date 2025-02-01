@@ -2,6 +2,7 @@ package com.aibatech.farmhub.data.network
 
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 data class RegisterRequest(
@@ -29,4 +30,5 @@ interface AuthApiService {
 
     @POST("login")
     suspend fun login(@Body request: LoginRequest): Response<AuthResponse>
+
 }

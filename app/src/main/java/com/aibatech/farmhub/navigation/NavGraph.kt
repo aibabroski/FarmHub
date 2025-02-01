@@ -73,15 +73,18 @@ fun MainScreen(navController: NavHostController) {
                 DashboardScreen()
             }
 
+
             // Add/Edit Product Screen
             composable("addEditProduct") {
                 AddEditProductScreen()
             }
 
+
             // Chat Screen
             composable("chat") {
                 ChatListScreen()
             }
+
 
             // Profile Screen
             composable("profile") {
